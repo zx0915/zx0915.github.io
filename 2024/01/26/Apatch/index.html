@@ -1,0 +1,790 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="梅零落">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="新一代内核root的详细介绍以及上手教程和常见问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apatch保姆级教程">
+<meta property="og:url" content="http://example.com/2024/01/26/Apatch/index.html">
+<meta property="og:site_name" content="XiXi Blog">
+<meta property="og:description" content="新一代内核root的详细介绍以及上手教程和常见问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.imgdb.cn/item/65b2cccf871b83018a709dfa.jpg">
+<meta property="article:published_time" content="2024-01-25T21:02:03.000Z">
+<meta property="article:modified_time" content="2024-01-25T23:20:52.599Z">
+<meta property="article:author" content="梅零落">
+<meta property="article:tag" content="Apatch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/65b2cccf871b83018a709dfa.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Apatch保姆级教程 - XiXi Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>零落成泥碾作尘</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://pic.imgdb.cn/item/65b2cccf871b83018a709dfa.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Apatch保姆级教程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        梅零落
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-26 05:02" pubdate>
+          2024年1月26日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          807 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Apatch保姆级教程</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2024年1月26日 早上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="🤔-什么是Apatch"><a href="#🤔-什么是Apatch" class="headerlink" title="🤔 什么是Apatch"></a>🤔 什么是Apatch</h1><p>在继KSU后，新一代内核root方式——<code>Apatch</code> 横空出世。相较于前者KSU来说更适合非gki设备，当然随着版本更新gki设备也会越来越稳定。众所周知非gki设备使用KSU需要用到内核源代码自己来打补丁，而有些设备内核并没有开源，这也使得这些设备想体验到内核root就望而却步了。而Apatch这个后起之秀则不需要内核源代码，只需要设备的<code>boot.img</code>来执行修补操作。和Magisk修补的区别在于Apatch修补boot中的<code>kernel</code>，magisk修补boot中的<code>ramdisk</code>，所以二者并不会冲突，你甚至可以让它们共存(你很闲可以试试)，存在<code>init_boot</code>分区的机型同样修补<code>boot.img</code></p>
+<ul>
+<li>Apatch项目地址:<br><a target="_blank" rel="noopener" href="https://github.com/bmax121/APatch">https://github.com/bmax121/APatch</a></li>
+<li>Apatch英文群组:<br><a target="_blank" rel="noopener" href="https://t.me/APatchGroup">https://t.me/APatchGroup</a></li>
+<li>Apatch中文群组:<br><a target="_blank" rel="noopener" href="https://t.me/APatch_CN_Group">https://t.me/APatch_CN_Group</a></li>
+<li>Apatch专用zygisk next:<br><a target="_blank" rel="noopener" href="https://github.com/Yervant7/ZygiskNext">https://github.com/Yervant7/ZygiskNext</a></li>
+</ul>
+<div class="note note-warning">
+            <p>用过KSU的都知道Zygisk next这个模块这里我也不赘述了，需要注意的是，在APatch上如果你想使用zygisk next这个模块则要用到上面的专用版或许也可称之为 Zygisk on Apatch</p>
+          </div>
+
+<h2 id="📱-Apatch支持的设备"><a href="#📱-Apatch支持的设备" class="headerlink" title="📱 Apatch支持的设备"></a>📱 Apatch支持的设备</h2><p>理论上</p>
+<ul>
+<li>ARM64设备</li>
+<li>Linux内核版本3.8-6.1</li>
+</ul>
+<p>内核配置</p>
+<ul>
+<li><code>CONFIG_KALLSYMS=y</code></li>
+<li><code>CONFIG_KALLSYMS_ALL=y</code></li>
+<li><code>CONFIG_KALLSYMS_ALL=n</code>(将会在下一版本也许是下下一个版本的KernelPatch支持)</li>
+</ul>
+<hr>
+<h1 id="🤩-如何使用Apatch"><a href="#🤩-如何使用Apatch" class="headerlink" title="🤩 如何使用Apatch"></a>🤩 如何使用Apatch</h1><p><strong>这里我将用两种方式来进行操作，无root和当前magisk或者KSU用户</strong></p>
+<h2 id="💿-提取boot-img"><a href="#💿-提取boot-img" class="headerlink" title="💿 提取boot.img"></a>💿 提取boot.img</h2><h3 id="😭-无root"><a href="#😭-无root" class="headerlink" title="😭 无root"></a>😭 无root</h3><ul>
+<li>找到当前机型版本号是一致的刷机包解压出其中的boot.img</li>
+</ul>
+<h3 id="😆-有root"><a href="#😆-有root" class="headerlink" title="😆 有root"></a>😆 有root</h3><ol>
+<li>有root的当然也可以使用上面的刷机包解包法</li>
+<li>使用爱玩机或者Kernel flasher等软件提取boot.img。考虑到部分设备没法使用kernel flasher这里我用Scene7来演示，如下图步骤所示</li>
+</ol>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65b2e02f871b83018a863549.jpg" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65b2e04a871b83018a8657ae.jpg" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65b2e05d871b83018a866d81.jpg" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<div class="note note-success">
+            <p>用scene7备份的boot.img在&#x2F;storage&#x2F;emulated&#x2F;0&#x2F;下</p>
+          </div>
+
+
+<h2 id="🔧-修补boot-img"><a href="#🔧-修补boot-img" class="headerlink" title="🔧 修补boot.img"></a>🔧 修补boot.img</h2><ul>
+<li>从项目地址下载最新的Apatch并安装，接下来步骤如下</li>
+</ul>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65a40c25871b83018a2a2ef3.jpg" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65a40c59871b83018a2afde9.jpg" srcset="/img/loading.gif" lazyload></div></div><div class="group-image-row"><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65a40c77871b83018a2b6fb4.jpg" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65a40ca1871b83018a2c1807.jpg" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<div class="note note-success">
+            <p>如无路径出现提示Patch failed说明修补失败，如你机型有第三方内核可以尝试更换第三方内核再次尝试，或者等待开发者适配</p>
+          </div>
+
+
+<h2 id="⏳-刷入boot"><a href="#⏳-刷入boot" class="headerlink" title="⏳ 刷入boot"></a>⏳ 刷入boot</h2><h3 id="😭-无root-1"><a href="#😭-无root-1" class="headerlink" title="😭 无root"></a>😭 无root</h3><p>考虑到你们都看保姆级别教程了，没个图形化的exe，让你们敲命令是会阿巴阿巴的，这里我用搞机助手电脑版来演示，会用命令刷入的自行刷入。操作如下</p>
+<ul>
+<li>搞机助手电脑版:<br><a target="_blank" rel="noopener" href="https://m.ddooo.com/softdown/158012.htm">https://m.ddooo.com/softdown/158012.htm</a></li>
+<li>自行安装fastboot驱动，否则手机进入fastboot电脑识别不到，有驱动的当我没说，时间紧凑我就不给你们演示装驱动了</li>
+</ul>
+<p>(先鸽一下，以后补上)🥰</p>
+<h3 id="😆-有root-1"><a href="#😆-有root-1" class="headerlink" title="😆 有root"></a>😆 有root</h3><ul>
+<li>这里我依然用Scene7演示如何刷入boot.img，打开软件后先进入备份还原</li>
+</ul>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65b2e892871b83018a90d7b6.jpg" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65b2e8a8871b83018a90f530.jpg" srcset="/img/loading.gif" lazyload></div></div><div class="group-image-row"><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65b2e8c0871b83018a9114b6.jpg" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://pic.imgdb.cn/item/65b2e8d3871b83018a913031.jpg" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<ul>
+<li>执行完以上步骤并重启</li>
+</ul>
+<div class="note note-success">
+            <p>我们提倡备份好资料并当前在有电脑的情况下执行这一步骤，在你同机型先人没测试过的情况下请牢记</p>
+          </div>
+
+<h1 id="🛫-开始使用"><a href="#🛫-开始使用" class="headerlink" title="🛫 开始使用"></a>🛫 开始使用</h1><ul>
+<li>打开管理器点击超级密钥，输入你修补时候填写的密钥，即可开始畅玩Apatch了。</li>
+</ul>
+<h1 id="🩺-常见问题"><a href="#🩺-常见问题" class="headerlink" title="🩺 常见问题"></a>🩺 常见问题</h1><p>同样先鸽一下，慢慢更新优化文章的时候会补上</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AE%89%E5%8D%93%E7%8E%A9%E6%9C%BA/" class="category-chain-item">安卓玩机</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Apatch/" class="print-no-link">#Apatch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Apatch保姆级教程</div>
+      <div>http://example.com/2024/01/26/Apatch/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>梅零落</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年1月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
